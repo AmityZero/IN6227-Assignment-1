@@ -1,0 +1,8 @@
+dataset/
+train.csv
+test.csv
+.ipynb_checkpoints/
+__pycache__/
+results/test_predictions.csv
+IN6227_results.zip
+.env
