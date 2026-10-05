@@ -1,38 +1,47 @@
-# Comparing Logistic Regression and Random Forest for Binary Classification
+# Logistic Regression and Random Forest for Binary Classification
 
-IN6227 Assignment 1, Variant 1. A complete workflow for the instructor-provided `train.csv` and `test.csv` split.
+A notebook comparing Logistic Regression and Random Forest using separate training and test datasets.
+
+## Data
+
+The dataset is supplied separately. Both `train.csv` and `test.csv` are required, with matching columns and a `label` column containing `no` or `yes` values. Rows with missing labels are excluded from training or evaluation.
 
 ## Run in Google Colab
 
-1. Upload `IN6227_Assignment1.ipynb` to Google Colab.
+1. Open `IN6227_Assignment1.ipynb` in Google Colab.
 2. Select a CPU runtime and choose **Runtime > Run all**.
-3. Upload both supplied data files when prompted, keeping their original filenames.
-4. The notebook runs training-only model selection, evaluates the held-out test set and writes outputs to `results/`.
-5. The last cell optionally downloads a results ZIP.
+3. Upload `train.csv` and `test.csv` when prompted.
+
+The notebook writes outputs to `results/`. The final cell creates and downloads a results ZIP when `DOWNLOAD_RESULTS` is `True`.
 
 ## Run locally
 
-Install the analysis dependencies with `pip install -r requirements.txt`. Use Jupyter or VS Code to run the notebook, with `train.csv` and `test.csv` beside it or inside `dataset/`. The original run used Python 3.13.15, NumPy 2.1.3, pandas 2.2.3 and scikit-learn 1.6.1. Jupyter is a separate interface dependency.
+Install the analysis dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Place `train.csv` and `test.csv` beside the notebook or in `dataset/`, then run all cells in Jupyter or VS Code. Install the notebook interface separately.
+
+The recorded run used Python 3.13.15, NumPy 2.1.3, pandas 2.2.3 and scikit-learn 1.6.1. `requirements.txt` pins these three analysis packages and specifies Matplotlib `>=3.8,<4`. Results may vary across package versions or platforms.
 
 ## Workflow
 
-- Inspect training-data types, missingness, duplicates, class balance, outliers and correlations.
-- Exclude missing labels; retain statistical outliers and all 15 predictors with documented reasons.
-- Impute numeric gaps with training-fold medians and categorical gaps with an explicit category.
-- One-hot encode nominal features and standardize numeric features for Logistic Regression.
-- Fit all preprocessing inside identical three-fold stratified CV splits, with random seed 42.
-- Compare six LR and eight RF configurations by mean validation average precision (AP).
-- Refit each selected configuration on the full labelled training set.
-- Evaluate with a fixed probability threshold of 0.5, reporting accuracy, balanced accuracy, precision, recall, F1, ROC-AUC and AP.
-- Export metrics, CV results, predictions, plots, package versions and input SHA-256 hashes.
+1. Inspect training-data types, missing values, duplicates, class balance, outliers and correlations.
+2. Impute missing features, one-hot encode categorical features and standardize numeric features for Logistic Regression. All preprocessing is fitted within the training folds.
+3. Compare six Logistic Regression and eight Random Forest configurations using the same three-fold stratified cross-validation splits, random seed 42 and mean validation average precision (AP).
+4. Refit the selected configuration for each model on the labelled training set and evaluate the held-out test set. Classification metrics use a probability threshold of 0.5.
+5. Export metrics, cross-validation results, predictions, plots, package versions and input SHA-256 hashes.
 
 ## Files
 
-- `IN6227_Assignment1.ipynb`: complete annotated source notebook, with outputs cleared.
+- `IN6227_Assignment1.ipynb`: source notebook, with outputs cleared.
 - `requirements.txt`: analysis dependencies.
-- `results/run_summary.json`: aggregate record from the completed Colab run on 4 October 2026.
-- `results/cv_summary.csv` and `results/test_metrics.csv`: aggregate validation and held-out results from that run.
+- `results/run_summary.json`: recorded runtime versions, input hashes, data summaries and model results.
+- `results/cv_summary.csv`: cross-validation results and selected parameters.
+- `results/test_metrics.csv`: held-out test metrics.
 
-The dataset is supplied separately. The source package excludes raw datasets, row-level predictions and report files. Re-running regenerates the full outputs; numerical results may vary slightly across library versions or platforms.
+Raw datasets and row-level predictions are excluded from the repository. Running the notebook regenerates the analysis outputs.
 
-The CV-selected model is Random Forest. Its test AP is 0.7076 versus 0.7023 for Logistic Regression. At threshold 0.5, Random Forest has higher recall and F1, while Logistic Regression has higher precision and accuracy. This is a trade-off, not evidence of universal superiority.
+The recorded cross-validation run selected Random Forest. Test AP was 0.7076 for Random Forest and 0.7023 for Logistic Regression.
